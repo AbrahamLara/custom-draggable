@@ -7,16 +7,32 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div>
-      <input id="width" type="number" min="300" value="300" />
-      <input id="height" type="number" min="300" value="300" />
-      <button onclick="handleClick()">Create</button>
+    <div class="header">
+      The windows created can only be dragged within the lightgray container
     </div>
-    <div
-      id="container"
-      style="position: relative; height: 700px; margin-top: 50px; background-color: aqua;"
-    ></div>
-    <div style="height: 500px;"></div>
+    <div id="container"></div>
+    <div class="input-container">
+      <span style="font-size: 15pt;">width: </span>
+      <input
+        class="input"
+        id="width"
+        type="number"
+        min="150"
+        max="300"
+        value="150"
+      />
+      <span style="font-size: 15pt;">height: </span>
+      <input
+        class="input"
+        id="height"
+        type="number"
+        min="150"
+        max="400"
+        value="150"
+      />
+      <button class="btn" onclick="handleClick()">Create</button>
+    </div>
+    <p style="text-align: center;">min: 150x150, max: 300x400</p>
     <script src="index.js"></script>
   </body>
 </html>
