@@ -27,79 +27,45 @@ function handleClick() {
   header.setAttribute("class", "top-bar");
   header.setAttribute("id", `draggable-${id}-header`);
 
-  header.onmousedown = function(e) {
+  header.onmousedown = header.ontouchstart = function(e) {
     e = e || window.event;
     e.preventDefault();
 
-    let initialCX = e.clientX - windowEl.offsetLeft;
-    let initialCY = e.clientY - windowEl.offsetTop;
+    let initialCX = e.targetTouches ? e.targetTouches[0].pageX : e.clientX;
+    initialCX -= windowEl.offsetLeft;
+    let initialCY = e.targetTouches ? e.targetTouches[0].pageY : e.clientY;
+    initialCY -= windowEl.offsetTop;
 
-    document.onmouseup = function() {
-      document.onmouseup = null;
-      document.onmousemove = null;
+    document.onmouseup = document.ontouchend = function() {
+      document.onmouseup = document.ontouchend = null;
+      document.onmousemove = document.ontouchmove = null;
     };
 
-    document.onmousemove = function(e) {
+    document.onmousemove = document.ontouchmove = function(e) {
       e = e || window.event;
       e.preventDefault();
 
-      let newLO = e.clientX - initialCX;
-      let newTO = e.clientY - initialCY;
+      const type = {
+        positionX: e.targetTouches ? e.targetTouches[0].pageX : e.clientX,
+        positionY: e.targetTouches ? e.targetTouches[0].pageY : e.clientY
+      };
+
+      let newLO = type.positionX - initialCX;
+      let newTO = type.positionY - initialCY;
       let offsetWidth = container.offsetWidth;
       let offsetHeight = container.offsetHeight;
 
-      if (e.clientX < initialCX) {
+      if (type.positionX < initialCX) {
         windowEl.style.left = "0px";
-      } else if (e.clientX > offsetWidth - (width - initialCX)) {
+      } else if (type.positionX > offsetWidth - (width - initialCX)) {
         windowEl.style.left = offsetWidth - width + "px";
       } else {
         windowEl.style.left = newLO + "px";
       }
 
-      if (e.clientY < initialCY) {
+      if (type.positionY < initialCY) {
         windowEl.style.top = "0px";
-      } else if (e.clientY > offsetHeight - (height - initialCY)) {
-        windowEl.style.top = offsetHeight - height + "px";
-      } else {
-        windowEl.style.top = newTO + "px";
-      }
-    };
-  };
-
-  header.ontouchstart = function(e) {
-    e = e || window.event;
-    e.preventDefault();
-
-    let initialCX = e.targetTouches[0].pageX - windowEl.offsetLeft;
-    let initialCY = e.targetTouches[0].pageY - windowEl.offsetTop;
-
-    document.ontouchend = function() {
-      document.ontouchend = null;
-      document.ontouchmove = null;
-    };
-
-    document.ontouchmove = function(e) {
-      e = e || window.event;
-      e.preventDefault();
-
-      let touchLocation = e.targetTouches[0];
-
-      let newLO = touchLocation.pageX - initialCX;
-      let newTO = touchLocation.pageY - initialCY;
-      let offsetWidth = container.offsetWidth;
-      let offsetHeight = container.offsetHeight;
-
-      if (touchLocation.pageX < initialCX) {
-        windowEl.style.left = "0px";
-      } else if (touchLocation.pageX > offsetWidth - (width - initialCX)) {
-        windowEl.style.left = offsetWidth - width + "px";
-      } else {
-        windowEl.style.left = newLO + "px";
-      }
-
-      if (touchLocation.pageY < initialCY) {
-        windowEl.style.top = "0px";
-      } else if (touchLocation.pageY > offsetHeight - (height - initialCY)) {
+      } else if (type.positionY > offsetHeight - (height - initialCY)) {
         windowEl.style.top = offsetHeight - height + "px";
       } else {
         windowEl.style.top = newTO + "px";
